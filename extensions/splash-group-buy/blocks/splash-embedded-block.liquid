@@ -1,0 +1,15 @@
+{% assign productMeta = product.first_available_variant.metafields.splash.settings |  default: "{}" %}
+<script id="splash-discount-json" type="application/json" >{{ productMeta }}</script>
+<script id="splash-product-json" type="application/json" >{{ product | json}}</script>
+
+
+{% schema %}
+{
+  "name": "Splash Group Buy Widget",
+  "target": "head", 
+  "class": "splash-group-buy-widget",	
+  "stylesheet": "style.css",
+  "javascript": "script.js"
+}
+{% endschema %}
+

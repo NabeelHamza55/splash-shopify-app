@@ -1,0 +1,91 @@
+.no-scroll {
+  overflow: hidden;
+}
+#splash-iframe {
+  display: none;
+  width: 60%;
+  height: 600px;
+  top: 0;
+  left: 0;
+  bottom: 0px;
+  position: sticky;
+  z-index: 99999;
+  margin: auto;
+  border: none;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+}
+
+.splash--button {
+  display: flex;
+  column-gap: 0.625rem;
+  justify-content: space-between;
+}
+
+.group-buy-content {
+  display: flex;
+  column-gap: 0.6rem;
+  align-items: center;
+}
+
+.group-buy-prices {
+  display: flex;
+  column-gap: 0.3rem;
+  align-items: center;
+}
+
+.group-buy-prices .group-buy-price-diff {
+  /* width: min-content; */
+}
+
+.group-buy-content span {
+  width: max-content;
+}
+
+#splash-widget {
+  display: none;
+}
+
+.splash-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  z-index: 9999;
+}
+
+.splash-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.splash-original-price {
+  text-decoration: line-through;
+}
+
+.splash-discounted-price {
+  font-weight: 600;
+}
+
+.splash-discount-badge span {
+  background-color: white;
+  color: black;
+  padding: 4px;
+  border-radius: 100px;
+}
+
+.splash-message {
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 500px) {
+  #splash-iframe {
+    width: 100%;
+    margin: none;
+  }
+}

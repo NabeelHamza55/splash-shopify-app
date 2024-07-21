@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Shop {
+  shop            String        @id @unique
+  scopes          String?
+  shopifyShopData ShopData?
+  subscription    Subscription?
+  isInstalled     Boolean
+  installedAt     DateTime      @default(now())
+  uninstalledAt   DateTime?
+  installCount    Int           @default(0)
+  subscribeCount  Int           @default(0)
+  showOnboarding  Boolean       @default(true)
+  test            Boolean       @default(false)
+  settings        Json?
+
+  @@index([shop])
+}
+
+model ShopData {
+  shop            String @id @unique
+  Shop            Shop   @relation(fields: [shop], references: [shop], onDelete: Cascade)
+  id              String @unique
+  name            String
+  email           String
+  url             String
+  currencyCode    String
+  currencyFormats Json
+  primaryDomain   Json
+  plan            Json
+  billingAddress  Json
+  ianaTimezone    String
+
+  @@index([shop])
+}
+
+model Subscription {
+  shop             String    @id @unique
+  Shop             Shop      @relation(fields: [shop], references: [shop], onDelete: Cascade)
+  plan             Plan      @default(TRIAL)
+  planSlug         String?
+  active           Boolean   @default(true)
+  test             Boolean   @default(false)
+  trialDays        Int       @default(14)
+  currentPeriodEnd DateTime?
+  createdAt        DateTime  @default(now())
+  upgradedAt       DateTime?
+  chargeId         String?
+
+  @@index([shop])
+}
+
+model Session {
+  id       String     @id @unique
+  shop     String
+  session  String     @db.Text
+  settings Settings[]
+
+  @@index([id])
+}
+
+model Settings {
+  id              String   @id @unique @default(uuid())
+  storeId         String
+  displaySettings Json
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now())
+
+  Session Session @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@index([storeId])
+}
+
+enum Plan {
+  TRIAL
+  PAID
+}

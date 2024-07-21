@@ -1,0 +1,32 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "1506d27f8afabbc3e8fedb8c23df7f06"
+name = "Splash App - Le SnatchFrançais"
+handle = "splash-app-lesnatchfrancais"
+application_url = "https://splash-shopify-bcb0a691c83b.herokuapp.com/"
+embedded = true
+
+[build]
+dev_store_url = "splash-development.myshopify.com"
+include_config_on_deploy = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "read_themes,write_draft_orders,write_inventory,write_orders,write_products"
+
+[auth]
+redirect_urls = [
+  "https://splash-shopify-bcb0a691c83b.herokuapp.com/auth/callback",
+  "https://splash-shopify-bcb0a691c83b.herokuapp.com/auth/shopify/callback",
+  "https://splash-shopify-bcb0a691c83b.herokuapp.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2024-07"
+
+  [[webhooks.subscriptions]]
+  uri = "https://splash-shopify-bcb0a691c83b.herokuapp.com/api/webhooks"
+  compliance_topics = [ "customers/redact", "customers/data_request", "shop/redact" ]
+
+[pos]
+embedded = false

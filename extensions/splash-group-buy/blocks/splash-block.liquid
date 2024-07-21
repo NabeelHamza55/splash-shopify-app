@@ -1,0 +1,240 @@
+{% assign productMeta = product.first_available_variant.metafields.splash.settings |  default: "{}" %}
+<script id="splash-discount-json" type="application/json" >{{ productMeta }}</script>
+<script id="splash-product-json" type="application/json" >{{ product | json}}</script>
+<script id="splash-meta-json" type="application/json" >
+[
+  {%- for variant in product.variants -%}
+    {"id": {{ variant.id }},
+    "meta": {{ variant.metafields.splash.settings }}
+    }{%-  unless forloop.last %},{% endunless %}
+  {%- endfor -%}
+]
+</script>
+
+
+{% style %}
+  #splash-widget {
+    --margin-top: {{ block.settings.margin_top | divided_by: 10.0 | round: 2}}rem !important;
+    --margin-bottom: {{ block.settings.margin_bottom | divided_by: 10.0 | round: 2 }}rem !important;
+    margin-top: var(--margin-top) !important;
+    margin-bottom: var(--margin-bottom) !important;
+  }
+
+  .splash-btn--primary {
+    --color-bg-cs: {{ block.settings.color_bg }} ;
+    --color-border-cs: {{ block.settings.color_border }} !important;
+    --color-label-cs: {{ block.settings.color_label }} !important;
+    --border-radius-css: {{ block.settings.button_border_radius }}px !important;
+    --border-width-cs: {{ block.settings.button_border_width }}px !important;
+    display: inline-flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+  }
+
+  .splash-btn--primary > div:first-child span{
+    display: flex;
+    align-items: center;
+    gap: 0.5rem
+  }
+  .splash-btn--primary > div:first-child {
+    font-size: 12px !important;
+    gap:  0.5rem;
+    display: flex;
+    align-items: center;
+    /* font-weight: 600; */
+  }
+  .splash-btn--primary > div:last-child {
+    display: flex !important;
+    gap: 1rem !important;
+  }
+  .splash-btn--primary > div:last-child span{
+    display: flex;
+    align-items: center;
+  }
+  .splash-btn--primary::before,
+  .splash-btn--primary::after{
+    content: none !important;
+    border-radius: var(--border-radius) !important;
+  }
+  .splash-nr-price-cs {
+    font-weight: 600 !important;
+  }
+
+  .spalsh-button-cs-color {
+    background-color: var(--color-bg-cs) !important;
+    color: var(--color-label-cs) !important;
+    border-color: var(--color-border-cs) !important;
+    border: var(--border-width-cs) solid var(--color-border-cs) !important;
+    font-size: 1.5rem !important;
+    border-radius: var(--border-radius-css) !important;
+    padding: 0.2rem 1.5rem !important;
+    cursor: pointer;
+    font-family: inherit !important;
+    text-decoration: none !important;
+    min-width: calc(12rem + var(--border-width-cs) * 2) !important;
+    min-height: calc(4.5rem + var(--border-width-cs) * 2) !important;
+    white-space: nowrap !important;
+    outline: none !important;
+  }
+
+  .splash-nr-price-cs-off {
+    border-radius: 25px !important;
+    color: black !important;
+    background-color: white !important;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+  }
+  .splash-btn--primary:not(.spalsh-button-cs-color) .splash-nr-price-cs-off {
+    color: var(--color-bg-cs) !important;
+    background-color: var(--color-label-cs) !important;
+    border-color: var(--color-border-cs) !important;
+  }
+  .splash-ct-price-cs{
+    text-decoration: line-through;
+  }
+  /* Add Text Editor Styling... */
+  {{ block.settings.splash_style }}
+{% endstyle %}
+
+<div data-selected-variant="{{ product.selected_or_first_available_variant.id }}" id="splash-widget">
+  {% assign button_class = block.settings.splash_button_classes %}
+  <splash-product-widget data-widget-id="SPLASH-PRODUCT-WIDGET">
+    <div class="product-form__buttons">
+      <button id="splash-group-buy-button" class="{% if button_class != blank %}{{ button_class }} {% else %}spalsh-button-cs-color {% endif %}splash-btn--primary">
+        <div>
+          <span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="21" height="20" viewBox="0 0 21 20" fill="none">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M17.021 8.21017C19.233 7.57588 20.512 5.26847 19.8778 3.05642C19.2435 0.844381 16.936 -0.434637 14.724 0.199656C12.512 0.833949 11.2329 3.14136 11.8672 5.3534C12.5015 7.56544 14.8089 8.84446 17.021 8.21017ZM17.8969 5.45567C18.0517 5.54149 18.1077 5.73657 18.0218 5.89139C17.4211 6.97513 16.0556 7.36669 14.9718 6.76596C14.817 6.68014 14.7611 6.48507 14.8469 6.33025C14.9327 6.17543 15.1278 6.11949 15.2826 6.20531C16.0567 6.6344 17.0321 6.35471 17.4612 5.58061C17.547 5.42579 17.7421 5.36985 17.8969 5.45567Z" fill="currentColor"/>
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M6.25 18.3335C9.70178 18.3335 12.5 15.5353 12.5 12.0835C12.5 8.63172 9.70178 5.8335 6.25 5.8335C2.79822 5.8335 0 8.63172 0 12.0835C0 15.5353 2.79822 18.3335 6.25 18.3335ZM8.65344 14.7241C8.84119 14.9119 8.84119 15.2163 8.65344 15.404C7.33918 16.7183 5.20833 16.7183 3.89407 15.404C3.70632 15.2163 3.70632 14.9119 3.89407 14.7241C4.08182 14.5364 4.38623 14.5364 4.57398 14.7241C5.51274 15.6629 7.03477 15.6629 7.97353 14.7241C8.16128 14.5364 8.46569 14.5364 8.65344 14.7241Z" fill="currentColor"/>
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M15.7026 19.8272C17.4722 20.3346 19.3181 19.3114 19.8256 17.5418C20.333 15.7722 19.3098 13.9262 17.5401 13.4188C15.7705 12.9114 13.9246 13.9346 13.4171 15.7042C12.9097 17.4738 13.9329 19.3198 15.7026 19.8272ZM17.4645 18.3299C17.5331 18.4538 17.4884 18.6098 17.3645 18.6785C16.4975 19.1591 15.4051 18.8458 14.9245 17.9788C14.8559 17.855 14.9006 17.6989 15.0245 17.6302C15.1483 17.5616 15.3044 17.6063 15.373 17.7302C15.7163 18.3495 16.4966 18.5732 17.1159 18.2299C17.2398 18.1613 17.3958 18.206 17.4645 18.3299Z" fill="currentColor"/>
+            </svg>
+          </span>
+          {{ 'splash.button.text' | t }}
+        </div>
+        <div>
+          {%- assign orignalPrice = product.selected_or_first_available_variant.compare_at_price | default: product.selected_or_first_available_variant.price -%}
+          <span data-currency-code="{{ localization.country.currency.symbol }}" class="splash-ct-price-cs">{{ orignalPrice | money }}</span>
+          <span class="splash-nr-price-cs">{{ productMeta.value.groupDiscountedPrice |  times: 100 | money }}</span>
+          <span class="splash-nr-price-cs-off">-{{ productMeta.value.groupDiscountPercentage }}%</span>
+        </div>
+      </button>
+    </div>
+    <div id="splash-popup-backdrop" class="splash-backdrop"></div>
+    <div id="splash-group-buy-message" class="splash-message"></div>
+  </splash-product-widget>
+{% comment %} <splash-product-widget data-widget-id="SPLASH-PRODUCT-WIDGET">
+  <div class="product-form__buttons">
+    <button class="splash--button {{ block.settings.splash_button_classes |  default: "button button--full-width button--primary" }}" id="splash-group-buy-button">
+        <div class="group-buy-content">
+          <img src="{{ 'splash-button.png' | asset_img_url: 'small' }}" height="24" width="24" loading="lazy" />
+          <span>{{ 'splash.button.text' | t }}</span>
+        </div>
+        <div class="group-buy-prices">
+          <div class="group-buy-price-diff">
+            <span class="splash-original-price">{{ product.price | money }}</span>
+            <span class="splash-discounted-price">{{ productMeta.value.groupDiscountedPrice |  times: 100 | money }}</span>
+          </div>
+          <div class="splash-discount-badge">
+            <span>-{{ productMeta.value.groupDiscountPercentage }}%</span>
+          </div>
+        </div>
+    </button>
+  </div>
+  <div id="splash-popup-backdrop" class="splash-backdrop"></div>
+  <div id="splash-group-buy-message" class="splash-message">{{ 'splash.button.text' | t }}</div>
+</splash-product-widget> {% endcomment %}
+</div>
+
+{% schema %}
+{
+  "name": "Splash Group Buy Widget",
+  "target": "section",
+  "enabled_on": {
+      "templates": ["product"]
+  },
+  "class": "splash-group-buy-widget",
+  "stylesheet": "style.css",
+  "javascript": "script.js",
+  "settings":[
+    {
+      "type": "text",
+      "id": "splash_button_classes",
+      "label": "Splash Button Classes"
+    },
+    {
+      "type": "header",
+      "content": "Button colors"
+    },
+    {
+      "type": "color",
+      "id":"color_bg",
+      "label":"Button background color"
+    },
+    {
+      "type": "color",
+      "id":"color_label",
+      "label":"Button label color"
+    },
+    {
+      "type": "header",
+      "content": "Button Border"
+    },
+    {
+      "type": "color",
+      "id":"color_border",
+      "label":"Button Border color"
+    },
+    {
+      "type": "range",
+      "id": "button_border_width",
+      "min": 0,
+      "max": 10,
+      "default": 1,
+      "step": 1,
+      "label": "Border width",
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "min": 0,
+      "max": 40,
+      "default": 0,
+      "step": 1,
+      "label": "Border radius",
+      "unit": "px"
+    },
+    {"type": "header",
+  "content":"Margin"},
+  {
+      "type": "range",
+      "id": "margin_top",
+      "min": -30,
+      "max": 30,
+      "default": 0,
+      "step": 1,
+      "label": "Margin Top",
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "min": -30,
+      "max": 30,
+      "default": 0,
+      "step": 1,
+      "label": "Margin Bottom",
+      "unit": "px"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "splash_style",
+      "label": "Splash Styling"
+    }
+  ]
+}
+{% endschema %}
+
